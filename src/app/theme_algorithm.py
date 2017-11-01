@@ -1,4 +1,6 @@
 from sklearn.cluster import KMeans
+import numpy as np
+
 from .algorithm import Algorithm
 
 
@@ -8,5 +10,5 @@ class ThemeAlgorithm(Algorithm):
         super().__init__()
         n_colors = 5
 
-    def run(self, *args, **kwargs):
+    def run(self, img: np.ndarray, num_colors: int) -> np.ndarray:
         pass
