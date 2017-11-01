@@ -1,5 +1,6 @@
 from sklearn.cluster import KMeans
 import numpy as np
+import cv2
 
 from .algorithm import Algorithm
 
@@ -12,3 +13,6 @@ class ThemeAlgorithm(Algorithm):
 
     def run(self, img: np.ndarray, num_colors: int) -> np.ndarray:
         pass
+
+    def serve(self, item: dict):
+        f = item['file']

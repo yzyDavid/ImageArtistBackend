@@ -1,2 +1,2 @@
 DEBUG = True
-port = 5000
+PORT = 5000
