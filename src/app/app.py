@@ -10,7 +10,7 @@ app = Flask(__name__)
 _theme_algorithm = ThemeAlgorithm()
 
 
-def init():
+def _init():
     if not os.path.exists(TEMP_DIR):
         os.makedirs(TEMP_DIR)
 
@@ -29,4 +29,5 @@ def theme_color():
 
 
 if __name__ == '__main__':
+    _init()
     app.run(host='0.0.0.0', debug=DEBUG, port=PORT)
