@@ -7,12 +7,15 @@ from .algorithm import Algorithm
 
 # noinspection PyCompatibility
 class ThemeAlgorithm(Algorithm):
-    def __init__(self):
+    def __init__(self, num_colors=None):
         super().__init__()
-        n_colors = 5
+        self.n_colors = num_colors if num_colors else 5
 
     def run(self, img: np.ndarray, num_colors: int) -> np.ndarray:
-        pass
+        n_colors = num_colors if num_colors else self.n_colors
+        return img  # TODO
 
     def serve(self, item: dict):
         f = item['file']
+        im = cv2.imdecode(f.read())  # FIXME
+        return im  # TODO

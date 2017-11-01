@@ -1,9 +1,18 @@
 from flask import Flask
 from flask import request
+import os
 
-from .config import DEBUG, PORT
+from .config import DEBUG, PORT, TEMP_DIR
+from .theme_algorithm import ThemeAlgorithm
 
 app = Flask(__name__)
+
+_theme_algorithm = ThemeAlgorithm()
+
+
+def init():
+    if not os.path.exists(TEMP_DIR):
+        os.makedirs(TEMP_DIR)
 
 
 @app.route('/hello', methods=['GET'])
@@ -15,6 +24,8 @@ def hello():
 def theme_color():
     headers = request.headers
     f = request.files['image']
+    result = _theme_algorithm.serve({'file': f})
+    return f, 200
 
 
 if __name__ == '__main__':
