@@ -1,13 +1,19 @@
 from flask import Flask
 from flask import request
 import os
+from werkzeug.utils import secure_filename
 
-from .config import DEBUG, PORT, TEMP_DIR
+from .config import DEBUG, PORT, TEMP_DIR, ALLOWED_EXTENSIONS
 from .theme_algorithm import ThemeAlgorithm
 
 app = Flask(__name__)
 
 _theme_algorithm = ThemeAlgorithm()
+
+
+def _allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
 
 
 def _init():
@@ -22,7 +28,6 @@ def hello():
 
 @app.route('/theme_color', methods=['POST'])
 def theme_color():
-    headers = request.headers
     f = request.files['image']
     result = _theme_algorithm.serve({'file': f})
     return f, 200

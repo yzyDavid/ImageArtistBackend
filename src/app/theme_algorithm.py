@@ -17,5 +17,6 @@ class ThemeAlgorithm(Algorithm):
 
     def serve(self, item: dict):
         f = item['file']
-        im = cv2.imdecode(f.read())  # FIXME
+        f.save()
+        im = cv2.imdecode(f.read(), cv2.IMREAD_COLOR)  # FIXME
         return im  # TODO
