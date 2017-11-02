@@ -34,7 +34,7 @@ class ThemeAlgorithm(Algorithm):
 
         return color
 
-    def serve(self, item: dict):
+    def serve(self, item: dict) -> str:
         """
 
         :param item: { 'file': file_path_name }
@@ -43,5 +43,7 @@ class ThemeAlgorithm(Algorithm):
         f = item['file']
         im = cv2.imread(f, cv2.IMREAD_COLOR)
         result = self.run(im)
+        fn = 'PROCESSED' + f
+        cv2.imwrite(fn, result)
 
-        return result
+        return fn
