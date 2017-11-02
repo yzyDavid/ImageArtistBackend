@@ -16,7 +16,10 @@ class ThemeAlgorithm(Algorithm):
         return img  # TODO
 
     def serve(self, item: dict):
+        """
+
+        :param item: { 'file': file_path_name }
+        :return: processed file_path_name
+        """
         f = item['file']
-        f.save()
-        im = cv2.imdecode(f.read(), cv2.IMREAD_COLOR)  # FIXME
-        return im  # TODO
+        im = cv2.imread(f, cv2.IMREAD_COLOR)
