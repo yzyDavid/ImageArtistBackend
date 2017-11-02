@@ -3,10 +3,11 @@ from flask import request
 import os
 from werkzeug.utils import secure_filename
 
-from .config import DEBUG, PORT, TEMP_DIR, ALLOWED_EXTENSIONS
+from .config import DEBUG, PORT, TEMP_DIR, ALLOWED_EXTENSIONS, MAX_CONTENT_LENGTH
 from .theme_algorithm import ThemeAlgorithm
 
 app = Flask(__name__)
+app.config['MAX_CONTENT_LENGTH'] = MAX_CONTENT_LENGTH
 
 _theme_algorithm = ThemeAlgorithm()
 
