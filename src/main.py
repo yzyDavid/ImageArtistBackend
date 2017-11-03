@@ -24,12 +24,12 @@ def _init():
         os.makedirs(TEMP_DIR)
 
 
-@app.route('/hello', methods=['GET'])
+@app.route('/api/hello', methods=['GET'])
 def hello():
     return 'ImageArtist Backend API'
 
 
-@app.route('/theme_color', methods=['POST'])
+@app.route('/api/theme_color', methods=['POST'])
 def theme_color():
     if 'image' not in request.files:
         return '', 400
