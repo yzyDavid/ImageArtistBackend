@@ -37,7 +37,7 @@ class ThemeAlgorithm(Algorithm):
     def serve(self, item: dict) -> str:
         """
 
-        :param item: { 'file': file_path_name }
+        :param item: { 'file': file_path_name, 'count': int [optional] }
         :return: processed file_path_name
         """
         f = item['file']

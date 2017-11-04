@@ -93,11 +93,27 @@ def theme_color_count():
 
 @app.route('/api/upload_image', methods=['POST'])
 def upload_image():
-    pass
+    """
+    form-data:
+    image: a jpeg picture
+    :return: a file pathname, assigned by backend.
+    """
+    if 'image' not in request.files:
+        return '', 400
+    f = request.files['image']
+    if f.filename == '':
+        return '', 400
+    if not _allowed_file(f.filename):
+        return '', 400
 
 
 @app.route('/api/upload_style', methods=['POST'])
 def upload_style():
+    """
+    form-data:
+    image: a jpeg picture
+    :return: a file pathname, assigned by backend.
+    """
     pass
 
 
