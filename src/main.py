@@ -1,5 +1,5 @@
 from __future__ import absolute_import
-from flask import Flask
+from flask import Flask, Response
 from flask import request
 import os
 from werkzeug.utils import secure_filename
@@ -42,7 +42,9 @@ def theme_color():
     filename = secure_filename(f.filename)
     pathname = os.path.join(app.config['UPLOAD_FOLDER'], filename)
     result = _theme_algorithm.serve({'file': pathname})
-    return 'Not Implemented', 200
+
+    response = Response(open(result), mimetype='image/jpeg')
+    return response
 
 
 if __name__ == '__main__':
