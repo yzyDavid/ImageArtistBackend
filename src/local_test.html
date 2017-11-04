@@ -5,8 +5,18 @@
     <title>local api tester</title>
 </head>
 <body>
-<form name="theme_color" method="post" enctype="multipart/form-data" action="http://127.0.0.1:5000/api/theme_color">
+<form name="theme_color" method="post" enctype="multipart/form-data"
+      action="http://127.0.0.1:5000/api/theme_color">
+    <h4>theme_color</h4>
     <input type="file" name="image" />
+    <input type="submit" />
+</form>
+
+<form name="theme_color_count" method="post" enctype="multipart/form-data"
+      action="http://127.0.0.1:5000/api/theme_color_count">
+    <h4>theme_color_count</h4>
+    <input type="file" name="image" />
+    <input type="number" name="count" />
     <input type="submit" />
 </form>
 

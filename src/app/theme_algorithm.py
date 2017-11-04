@@ -42,7 +42,12 @@ class ThemeAlgorithm(Algorithm):
         """
         f = item['file']
         im = cv2.imread(f, cv2.IMREAD_COLOR)
-        result = self.run(im)
+
+        if 'count' not in item:
+            result = self.run(im)
+        else:
+            result = self.run(im, num_colors=item['count'])
+
         fn = f + '_PROCESSED.jpg'
         cv2.imwrite(fn, result)
 

@@ -34,6 +34,12 @@ def hello():
 
 @app.route('/api/theme_color', methods=['POST'])
 def theme_color():
+    """
+    POST
+    form-data:
+    image: a jpeg picture
+    :return: a jpeg picture download
+    """
     if 'image' not in request.files:
         return '', 400
     f = request.files['image']
@@ -53,7 +59,36 @@ def theme_color():
 
 @app.route('/api/theme_color_count', methods=['POST'])
 def theme_color_count():
-    pass
+    """
+    POST
+    form-data:
+    image: a jpeg picture
+    count: a number, the K of K-means
+    :return: a jpeg picture download
+    """
+    if 'image' not in request.files:
+        return '', 400
+    f = request.files['image']
+    if f.filename == '':
+        return '', 400
+    if not _allowed_file(f.filename):
+        return '', 400
+
+    if 'count' not in request.form:
+        return '', 400
+    n = request.form['count']
+    if type(n) != int:
+        n = int(n)
+    if n <= 0 or n > 100:
+        return '', 400
+
+    filename = secure_filename(f.filename)
+    pathname = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+    f.save(pathname)
+    result = _theme_algorithm.serve({'file': pathname, 'count': n})
+
+    response = send_file(result, mimetype='image/jpeg', as_attachment=True)
+    return response
 
 
 @app.route('/api/upload_image', methods=['POST'])
