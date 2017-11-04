@@ -44,6 +44,7 @@ def theme_color():
 
     filename = secure_filename(f.filename)
     pathname = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+    f.save(pathname)
     result = _theme_algorithm.serve({'file': pathname})
 
     response = Response(open(result), mimetype='image/jpeg')
