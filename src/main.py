@@ -1,6 +1,6 @@
 from __future__ import absolute_import
 from flask import Flask, Response
-from flask import request
+from flask import request, send_file
 import os
 from werkzeug.utils import secure_filename
 
@@ -47,7 +47,7 @@ def theme_color():
     f.save(pathname)
     result = _theme_algorithm.serve({'file': pathname})
 
-    response = Response(open(result), mimetype='image/jpeg')
+    response = send_file(result, mimetype='image/jpeg', as_attachment=True)
     return response
 
 
