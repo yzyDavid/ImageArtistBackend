@@ -24,6 +24,9 @@ def _init():
         os.makedirs(TEMP_DIR)
 
 
+_init()
+
+
 @app.route('/api/hello', methods=['GET'])
 def hello():
     return 'ImageArtist Backend API'
@@ -45,6 +48,26 @@ def theme_color():
 
     response = Response(open(result), mimetype='image/jpeg')
     return response
+
+
+@app.route('/api/theme_color_count', methods=['POST'])
+def theme_color_count():
+    pass
+
+
+@app.route('/api/upload_image', methods=['POST'])
+def upload_image():
+    pass
+
+
+@app.route('/api/upload_style', methods=['POST'])
+def upload_style():
+    pass
+
+
+@app.route('/api/transfer', methods=['GET'])
+def transfer():
+    pass
 
 
 if __name__ == '__main__':
