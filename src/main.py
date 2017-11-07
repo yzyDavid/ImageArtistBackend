@@ -138,7 +138,7 @@ def upload_style():
     return pathname
 
 
-@app.route('/api/transfer', methods=['GET'])
+@app.route('/api/transfer', methods=['POST'])
 def transfer():
     """
     form-data:

@@ -8,16 +8,38 @@
 <form name="theme_color" method="post" enctype="multipart/form-data"
       action="http://127.0.0.1:5000/api/theme_color">
     <h4>theme_color</h4>
-    <input type="file" name="image" />
-    <input type="submit" />
+    <input type="file" name="image"/>
+    <input type="submit"/>
 </form>
 
 <form name="theme_color_count" method="post" enctype="multipart/form-data"
       action="http://127.0.0.1:5000/api/theme_color_count">
     <h4>theme_color_count</h4>
-    <input type="file" name="image" />
-    <input type="number" name="count" />
-    <input type="submit" />
+    <input type="file" name="image"/>
+    <input type="number" name="count"/>
+    <input type="submit"/>
+</form>
+
+<form name="upload_image" method="post" enctype="multipart/form-data"
+      action="http://127.0.0.1:5000/api/upload_image">
+    <h4>upload_image</h4>
+    <input type="file" name="image"/>
+    <input type="submit"/>
+</form>
+
+<form name="upload_style" method="post" enctype="multipart/form-data"
+      action="http://127.0.0.1:5000/api/upload_style">
+    <h4>upload_style</h4>
+    <input type="file" name="image"/>
+    <input type="submit"/>
+</form>
+
+<form name="transfer" method="post" enctype="multipart/form-data"
+      action="http://127.0.0.1:5000/api/transfer">
+    <h4>transfer</h4>
+    <input type="text" name="img"/>
+    <input type="text" name="style"/>
+    <input type="submit"/>
 </form>
 
 </body>
