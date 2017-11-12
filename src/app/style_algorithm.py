@@ -14,7 +14,8 @@ class StyleAlgorithm(Algorithm):
     def __init__(self):
         super().__init__()
         self.model_pathname = 'style/experiments/models/21styles.model'
-        self.output_pathname = 'style/experiments/output.jpg'
+        self.output_pathname = 'output.jpg'
+        self.main_python = 'style/experiments/main.py'
 
     def serve(self, item: dict):
         """
@@ -23,11 +24,11 @@ class StyleAlgorithm(Algorithm):
         :return: file_path_name: str
         """
         template_cmdline = \
-            r'python main.py eval --content-image %s --style-image %s --model %s --content-size 1024'
+            r'python %s eval --content-image %s --style-image %s --model %s --content-size 1024'
         if 'img' not in item or 'style' not in item:
             raise KeyError('Argument Error')
 
-        cmdline = template_cmdline % (item['img'], item['style'], self.model_pathname)
+        cmdline = template_cmdline % (self.main_python, item['img'], item['style'], self.model_pathname)
         os.system(cmdline)
         return self.output_pathname
 
