@@ -7,6 +7,7 @@ from werkzeug.utils import secure_filename
 from app.config import DEBUG, PORT, TEMP_DIR, ALLOWED_EXTENSIONS, MAX_CONTENT_LENGTH
 from app.theme_algorithm import ThemeAlgorithm
 from app.style_algorithm import StyleAlgorithm
+from app.utils import hash_filename
 
 app = Flask(__name__)
 app.config['MAX_CONTENT_LENGTH'] = MAX_CONTENT_LENGTH
@@ -50,7 +51,7 @@ def theme_color():
     if not _allowed_file(f.filename):
         return '', 400
 
-    filename = secure_filename(f.filename)
+    filename = hash_filename(f)
     pathname = os.path.join(app.config['UPLOAD_FOLDER'], filename)
     f.save(pathname)
     result = _theme_algorithm.serve({'file': pathname})
@@ -84,7 +85,7 @@ def theme_color_count():
     if n <= 0 or n > 100:
         return '', 400
 
-    filename = secure_filename(f.filename)
+    filename = hash_filename(f)
     pathname = os.path.join(app.config['UPLOAD_FOLDER'], filename)
     f.save(pathname)
     result = _theme_algorithm.serve({'file': pathname, 'count': n})
@@ -108,7 +109,8 @@ def upload_image():
     if not _allowed_file(f.filename):
         return '', 400
 
-    filename = secure_filename(f.filename)
+    # filename = secure_filename(f.filename)
+    filename = hash_filename(f)
     # TODO: make the pathname unique, also the upload_style method.
     pathname = os.path.join(app.config['UPLOAD_FOLDER'], filename)
     f.save(pathname)
@@ -131,7 +133,7 @@ def upload_style():
     if not _allowed_file(f.filename):
         return '', 400
 
-    filename = secure_filename(f.filename)
+    filename = hash_filename(f)
     pathname = os.path.join(app.config['UPLOAD_FOLDER'], filename)
     f.save(pathname)
 
