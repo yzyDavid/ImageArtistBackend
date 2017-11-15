@@ -2,7 +2,6 @@ from __future__ import absolute_import
 from flask import Flask, Response
 from flask import request, send_file
 import os
-from werkzeug.utils import secure_filename
 
 from app.config import DEBUG, PORT, TEMP_DIR, ALLOWED_EXTENSIONS, MAX_CONTENT_LENGTH
 from app.theme_algorithm import ThemeAlgorithm
@@ -111,7 +110,6 @@ def upload_image():
 
     # filename = secure_filename(f.filename)
     filename = hash_filename(f)
-    # TODO: make the pathname unique, also the upload_style method.
     pathname = os.path.join(app.config['UPLOAD_FOLDER'], filename)
     f.save(pathname)
 
