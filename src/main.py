@@ -184,7 +184,10 @@ def transfer_url():
 def image():
     if 'q' not in request.args.keys():
         return '', 400
-    return send_file(request.args.get('q'), mimetype='image/jpeg', as_attachment=False)
+    pathname = request.args.get('q')
+    if not pathname.startswith(TEMP_DIR):
+        return '', 400
+    return send_file(pathname, mimetype='image/jpeg', as_attachment=False)
 
 
 if __name__ == '__main__':
