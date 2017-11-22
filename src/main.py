@@ -3,7 +3,7 @@ from flask import Flask, Response
 from flask import request, send_file
 import os
 from flask_request_params import bind_request_params
-from flask_cors import CORS
+from flask_cors import CORS, cross_origin
 
 from app.config import DEBUG, PORT, TEMP_DIR, ALLOWED_EXTENSIONS, MAX_CONTENT_LENGTH
 from app.theme_algorithm import ThemeAlgorithm
