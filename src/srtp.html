@@ -133,7 +133,7 @@
                 init();
             }
             buttonDiv.innerHTML +=
-                `<div class="buttonDiv"><button onclick="currentStyle='${name}'">${name}</button></div>`;
+                `<div class="buttonDiv"><button onclick="currentStyle='${name}'; init()">${name}</button></div>`;
         }
     }
 
@@ -180,7 +180,6 @@
             },
             body: form
         }).then((res) => {
-            console.log(res);
             if (!res.ok) {
                 throw new DOMException()
             }
