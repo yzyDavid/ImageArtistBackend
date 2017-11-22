@@ -162,7 +162,7 @@ def transfer():
 
 
 @app.route('/api/transfer_url', methods=['POST'])
-def transfer():
+def transfer_url():
     """
     form-data:
     img: str => pathname of an uploaded content image.

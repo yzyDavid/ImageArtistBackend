@@ -5,6 +5,12 @@
     <title>local api tester</title>
 </head>
 <body>
+<form name="hello" method="get" enctype="multipart/form-data"
+      action="http://127.0.0.1:5000/api/hello?q=hello-world">
+    <h4>hello</h4>
+    <input type="submit"/>
+</form>
+
 <form name="theme_color" method="post" enctype="multipart/form-data"
       action="http://127.0.0.1:5000/api/theme_color">
     <h4>theme_color</h4>
