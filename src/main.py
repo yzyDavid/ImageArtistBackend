@@ -93,7 +93,7 @@ def theme_color_count():
     f.save(pathname)
     result = _theme_algorithm.serve({'file': pathname, 'count': n})
 
-    response = send_file(result, mimetype='image/jpeg', as_attachment=True)
+    response = send_file(result, mimetype='image/jpeg', as_attachment=False)
     return response
 
 
@@ -158,7 +158,7 @@ def transfer():
         return '', 400
 
     output_pathname = _style_algorithm.serve({'img': img, 'style': style})
-    return send_file(output_pathname, mimetype='image/jpeg', as_attachment=True)
+    return send_file(output_pathname, mimetype='image/jpeg', as_attachment=False)
 
 
 @app.route('/api/transfer_url', methods=['POST'])
