@@ -186,8 +186,7 @@
         }).then((res) => {
             console.log(res);
             if (!res.ok) {
-                alert('上传失败');
-                return;
+                throw new DOMException()
             }
             return res.text();
         }).then((text) => {
@@ -204,8 +203,7 @@
             });
         }).then((res) => {
             if (!res.ok) {
-                alert('上传失败');
-                return;
+                throw new DOMException()
             }
             return res.text();
         }).then((text) => {
@@ -222,8 +220,7 @@
             });
         }).then((res) => {
             if (!res.ok) {
-                alert('上传失败');
-                return;
+                throw new DOMException()
             }
             return res.text();
         }).then((text) => {
@@ -235,7 +232,7 @@
             alert('操作完成');
         }).catch((e) => {
             console.log(e);
-            alert('上传失败');
+            alert('操作失败');
         });
     };
 
