@@ -13,9 +13,9 @@ class StyleAlgorithm(Algorithm):
 
     def __init__(self):
         super().__init__()
-        self.model_pathname = 'style/experiments/models/21styles.model'
+        self.model_pathname = 'styl/experiments/models/21styles.model'
         self.output_pathname = 'output.jpg'
-        self.main_python = 'style/experiments/main.py'
+        self.main_python = 'styl/experiments/main.py'
 
     def serve(self, item: dict):
         """
