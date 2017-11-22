@@ -100,6 +100,7 @@ def theme_color_count():
 
 
 @app.route('/api/upload_image', methods=['POST'])
+@cross_origin()
 def upload_image():
     """
     form-data:
