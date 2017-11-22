@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+    <style>
+        #imgloader {
+            display: none;
+        }
+
+        button {
+            width: 100px;
+            height: 30px;
+            margin: 10px;
+        }
+
+        #buttonDiv {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+            align-content: flex-start
+        }
+    </style>
+</head>
+
+<body>
+    <div style="display: flex">
+        <div>
+            <canvas id="screen" height="768" width="1024">抱歉，您的浏览器还不支持canvas。</canvas>
+            <canvas id="imgloader" height="768" width="1024">抱歉，您的浏览器还不支持canvas。</canvas>
+        </div>
+        <div id="buttonDiv">
+            <button id="upload_content">上传内容图片</button>
+            <button id="upload_style">上传风格图片</button>
+        </div>
+    </div>
+
+    <script>
+        const imgLoader = document.getElementById("imgloader");
+        const imgLoaderCtx = imgLoader.getContext("2d");
+
+
+        const screen = document.getElementById("screen");
+        const screenCtx = screen.getContext("2d");
+
+        const buttonDiv = document.getElementById('buttonDiv');
+
+        let WIDTH = 1024;
+        let HEIGHT = 768;
+
+
+        const styleList = {
+            'original': 'img/original.jpg',
+            "Robert_Delaunay,_1906,_Portrait": "img/Robert_Delaunay,_1906,_Portrait.jpg",
+            "candy": "img/candy.jpg",
+            "composition_vii": "img/composition_vii.jpg",
+            "escher_sphere": "img/escher_sphere.jpg",
+            "feathers": "img/feathers.jpg",
+            "frida_kahlo": "img/frida_kahlo.jpg",
+            "la_muse": "img/la_muse.jpg",
+            "mosaic": "img/mosaic.jpg",
+            "mosaic_ducks_massimo": "img/mosaic_ducks_massimo.jpg",
+            "output": "img/output.jpg",
+            "pencil": "img/pencil.jpg",
+            "picasso_selfport1907": "img/picasso_selfport1907.jpg",
+            "rain_princess": "img/rain_princess.jpg",
+            "seated-nude": "img/seated-nude.jpg",
+            "shipwreck": "img/shipwreck.jpg",
+            "starry_night": "img/starry_night.jpg",
+            "stars2": "img/stars2.jpg",
+            "strip": "img/strip.jpg",
+            "the_scream": "img/the_scream.jpg",
+            "udnie": "img/udnie.jpg",
+            "wave": "img/wave.jpg",
+            "woman-with-hat-matisse": "img/woman-with-hat-matisse.jpg"
+        };
+
+        const styleImgList = {};
+
+        let remainStyleCnt = Object.keys(styleList).length;
+
+        let currentStyle = 'style1';
+
+
+        function init() {
+            console.log('init');
+            let resultImgData = screenCtx.getImageData(0, 0, WIDTH, HEIGHT);
+            screen.addEventListener('click', function (e) {
+                const styleImg = styleImgList[currentStyle];
+                let x = e.layerY;
+                let y = e.layerX;
+                for (let i = Math.max(0, x - kernel_half); i < Math.min(HEIGHT, x + kernel_half); i++) {
+                    let k = 255 - parseInt(i * 255 / HEIGHT);
+                    let w = i * WIDTH;
+                    let u = ((i - x) + kernel_half) * kernel_size;
+                    for (let j = Math.max(0, y - kernel_half); j < Math.min(WIDTH, y + kernel_half); j++) {
+                        let p = u + (j - y) + kernel_half;
+                        let a = kernel[p] / 255;
+                        let g = 1 - a;
+                        for (let f = 0; f < 3; f++) {
+                            resultImgData.data[4 * (w + j) + f] = resultImgData.data[4 * (w + j) + f] * g +
+                                styleImg[4 * (w + j) + f] * a;
+                        }
+                    }
+                }
+                screenCtx.putImageData(resultImgData, 0, 0);
+            }, false);
+
+        }
+
+        function loadStyle(name) {
+            let img = new Image();
+            img.src = styleList[name];
+            img.onload = function () {
+                if (name === 'original') {
+                    screenCtx.drawImage(img, 0, 0);
+                    HEIGHT = img.height;
+                    WIDTH = img.width;
+                }
+                imgLoaderCtx.drawImage(img, 0, 0);
+                styleImgList[name] = imgLoaderCtx.getImageData(0, 0, img.width, img.height).data.slice(0);
+                remainStyleCnt--;
+                if (remainStyleCnt === 0) {
+                    init();
+                }
+                buttonDiv.innerHTML +=
+                    `<div class="buttonDiv"><button onclick="currentStyle='${name}'">${name}</button></div>`;
+            }
+        }
+
+        function getSquareKernel(n) {
+            let result = new Uint8Array(n * n);
+            let base = parseInt(n / 2) * parseInt(n / 2);
+            let w = 0;
+            for (let i = -parseInt(n / 2); i <= parseInt(n / 2); i++) {
+                for (let j = -parseInt(n / 2); j <= parseInt(n / 2); j++) {
+                    result[w] = (1 - Math.min(1, (i * i + j * j) / base)) * 255;
+                    w++;
+                }
+            }
+            console.log(w);
+            return result;
+        }
+
+        kernel_size = 127;
+        kernel_half = parseInt(kernel_size / 2);
+
+        kernel = getSquareKernel(kernel_size);
+
+        // for (let style of Object.keys(styleList)) {
+        //     loadStyle(style);
+        // }
+
+        const baseUrl = 'https://cluster.yuzhenyun.me/api';
+        const auth = 'minami:kotori';
+
+        const uploadContentButton = document.getElementById("upload_content");
+        const uploadStyleButton = document.getElementById("upload_style");
+
+        uploadContentButton.onclick = () => {
+            const form = new FormData();
+            fetch(baseUrl + '/upload_image', {
+                method: 'POST',
+                headers: {
+                    'Authorization': 'Basic ' + btoa(auth),
+                    'Access-Control-Allow-Origin': '*'
+                },
+                mode: 'cors',
+                body: form
+            }).then((res) => alert('上传成功'))
+            .catch((e) => {
+                alert('上传失败');
+                console.log(e)
+            });
+        };
+
+    </script>
+</body>
+</html>

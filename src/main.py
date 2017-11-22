@@ -193,6 +193,11 @@ def image():
     return send_file(pathname, mimetype='image/jpeg', as_attachment=False)
 
 
+@app.route('/api/srtp')
+def srtp():
+    return send_file('srtp.html', mimetype='text/html')
+
+
 if __name__ == '__main__':
     _init()
     app.run(host='0.0.0.0', debug=DEBUG, port=PORT)
