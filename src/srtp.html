@@ -165,9 +165,7 @@
                 method: 'POST',
                 headers: {
                     'Authorization': 'Basic ' + btoa(auth),
-                    'Access-Control-Allow-Origin': '*'
                 },
-                mode: 'cors',
                 body: form
             }).then((res) => alert('上传成功'))
             .catch((e) => {
