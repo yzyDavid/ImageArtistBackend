@@ -2,6 +2,7 @@ from __future__ import absolute_import
 from flask import Flask, Response
 from flask import request, send_file
 import os
+from flask_request_params import bind_request_params
 
 from app.config import DEBUG, PORT, TEMP_DIR, ALLOWED_EXTENSIONS, MAX_CONTENT_LENGTH
 from app.theme_algorithm import ThemeAlgorithm
@@ -11,6 +12,7 @@ from app.utils import hash_filename
 app = Flask(__name__)
 app.config['MAX_CONTENT_LENGTH'] = MAX_CONTENT_LENGTH
 app.config['UPLOAD_FOLDER'] = TEMP_DIR
+app.before_request(bind_request_params)
 
 _theme_algorithm = ThemeAlgorithm()
 _style_algorithm = StyleAlgorithm()
@@ -31,6 +33,8 @@ _init()
 
 @app.route('/api/hello', methods=['GET'])
 def hello():
+    if 'q' in request.args.keys():
+        return request.args.get('q')
     return 'ImageArtist Backend API'
 
 
@@ -155,6 +159,25 @@ def transfer():
 
     output_pathname = _style_algorithm.serve({'img': img, 'style': style})
     return send_file(output_pathname, mimetype='image/jpeg', as_attachment=True)
+
+
+@app.route('/api/transfer_url', methods=['POST'])
+def transfer():
+    """
+    form-data:
+    img: str => pathname of an uploaded content image.
+    style: str => pathname of an uploaded style image.
+    :return: a jpeg image url
+    """
+    if 'img' not in request.form or 'style' not in request.form:
+        return '', 400
+    img = request.form['img']
+    style = request.form['style']
+    if not os.path.exists(img) or not os.path.exists(style):
+        return '', 400
+
+    output_pathname = _style_algorithm.serve({'img': img, 'style': style})
+    return '', 200
 
 
 if __name__ == '__main__':
