@@ -33,7 +33,14 @@
         </div>
         <div id="buttonDiv">
             <button id="upload_content">上传内容图片</button>
+            <label for="内容图片">
+                <input type=file id="content_file">
+            </label>
             <button id="upload_style">上传风格图片</button>
+            <label for="风格图片">
+                <input type=file id="style_file">
+            </label>
+            <button id="transfer">进行转换</button>
         </div>
     </div>
 
@@ -158,9 +165,12 @@
 
         const uploadContentButton = document.getElementById("upload_content");
         const uploadStyleButton = document.getElementById("upload_style");
+        const transferButton = document.getElementById("transfer");
 
         uploadContentButton.onclick = () => {
             const form = new FormData();
+            const file = document.getElementById("content_file");
+            form.append("image", file.files[0]);
             fetch(baseUrl + '/upload_image', {
                 method: 'POST',
                 headers: {
