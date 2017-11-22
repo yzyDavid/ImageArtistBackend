@@ -33,11 +33,9 @@
     </div>
     <div id="metaButtonDiv">
         <label for="style_name"></label><input type=text id="style_name">
-        <button id="upload_content">上传内容图片</button>
         <label for="内容图片">
             <input type=file id="content_file">
         </label>
-        <button id="upload_style">上传风格图片</button>
         <label for="风格图片">
             <input type=file id="style_file">
         </label>
@@ -166,8 +164,6 @@
     const baseUrl = '/api';
     const auth = 'minami:kotori';
 
-    const uploadContentButton = document.getElementById("upload_content");
-    const uploadStyleButton = document.getElementById("upload_style");
     const transferButton = document.getElementById("transfer");
 
     let content_pathname, style_pathname;
