@@ -221,7 +221,7 @@
             return res.text();
         }).then((text) => {
             result_pathname = text;
-            const url = baseUrl + '/image?q=' + result_pathname;
+            const url = baseUrl + '/image?q=' + encodeURI(result_pathname);
             const name_key = document.getElementById("style_name").value;
             styleList[name_key] = url;
             loadStyle(name_key);
