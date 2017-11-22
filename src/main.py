@@ -2,6 +2,7 @@ from __future__ import absolute_import
 from flask import Flask, Response
 from flask import request, send_file
 import os
+import shutil
 from flask_request_params import bind_request_params
 from flask_cors import CORS, cross_origin
 
@@ -180,7 +181,12 @@ def transfer_url():
         return '', 400
 
     output_pathname = _style_algorithm.serve({'img': img, 'style': style})
-    return output_pathname, 200
+    with open(output_pathname, 'rb') as f:
+        f.filename = output_pathname
+        f_name = hash_filename(f)
+    pathname = os.path.join(TEMP_DIR, f_name)
+    shutil.move(output_pathname, pathname)
+    return pathname, 200
 
 
 @app.route('/api/image', methods=['GET'])
