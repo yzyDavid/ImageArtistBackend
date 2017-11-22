@@ -177,7 +177,14 @@ def transfer_url():
         return '', 400
 
     output_pathname = _style_algorithm.serve({'img': img, 'style': style})
-    return '', 200
+    return output_pathname, 200
+
+
+@app.route('/api/image', methods=['GET'])
+def image():
+    if 'q' not in request.args.keys():
+        return '', 400
+    return send_file(request.args.get('q'), mimetype='image/jpeg', as_attachment=False)
 
 
 if __name__ == '__main__':
