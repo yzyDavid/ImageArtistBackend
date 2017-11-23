@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>SRTP web</title>
 
     <style>
         #imgloader {
@@ -58,7 +58,7 @@
     let HEIGHT = 768;
 
 
-    const styleList = {
+/*    const styleList = {
         'original': 'img/original.jpg',
         "Robert_Delaunay,_1906,_Portrait": "img/Robert_Delaunay,_1906,_Portrait.jpg",
         "candy": "img/candy.jpg",
@@ -82,7 +82,9 @@
         "udnie": "img/udnie.jpg",
         "wave": "img/wave.jpg",
         "woman-with-hat-matisse": "img/woman-with-hat-matisse.jpg"
-    };
+    };*/
+
+    const styleList = {};
 
     const styleImgList = {};
 
@@ -121,21 +123,22 @@
         let img = new Image();
         img.src = styleList[name];
         img.onload = function () {
-            if (name === 'original') {
+/*            if (name === 'original') {
                 screenCtx.drawImage(img, 0, 0);
                 HEIGHT = img.height;
                 WIDTH = img.width;
-            }
+            }*/
             imgLoaderCtx.drawImage(img, 0, 0);
             styleImgList[name] = imgLoaderCtx.getImageData(0, 0, img.width, img.height).data.slice(0);
-            remainStyleCnt--;
+/*            remainStyleCnt--;
             if (remainStyleCnt === 0) {
                 init();
-            }
+            }*/
             buttonDiv.innerHTML +=
-                `<div class="buttonDiv"><button onclick="currentStyle='${name}'; init()">${name}</button></div>`;
-            buttonDiv.innerHTML +=
-                `<div class="buttonDiv"><img src="${img.src}"/></div>`;
+                `<div class="buttonDiv"><button onclick="currentStyle='${name}';">${name}</button></div>`;
+/*            buttonDiv.innerHTML +=
+                `<div class="buttonDiv"><img src="${img.src}"/></div>`;*/
+            setInitCtx(img);
         }
     }
 
@@ -161,6 +164,12 @@
     // for (let style of Object.keys(styleList)) {
     //     loadStyle(style);
     // }
+
+    function setInitCtx(img) {
+        screenCtx.drawImage(img, 0, 0);
+        HEIGHT = img.height;
+        WIDTH = img.width;
+    }
 
     // const baseUrl = 'https://cluster.yuzhenyun.me/api';
     const baseUrl = '/api';
@@ -232,6 +241,8 @@
             alert('操作失败');
         });
     };
+
+    init();
 
 </script>
 </body>
