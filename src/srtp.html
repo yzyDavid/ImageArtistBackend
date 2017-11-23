@@ -181,6 +181,11 @@
     let result_pathname;
 
     transferButton.onclick = () => {
+        const name_key = document.getElementById("style_name").value;
+        if (!name_key) {
+            alert('请输入style名称');
+            return;
+        }
         const form = new FormData();
         const file = document.getElementById("content_file");
         form.append("image", file.files[0]);
