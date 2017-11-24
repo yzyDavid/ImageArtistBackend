@@ -273,7 +273,7 @@ def get_context():
     style_model.load_state_dict(torch.load(args.model))
 
     if args.cuda:
-        style_model.cuda()
+        style_model = style_model.cuda()
 
     return style_model, args
 
