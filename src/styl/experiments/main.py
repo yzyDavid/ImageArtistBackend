@@ -27,14 +27,6 @@ from .net import Net, Vgg16
 from .option import Options
 
 
-def entry():
-    """
-    entered by backend code.
-    :return:
-    """
-    pass
-
-
 def main():
     # figure out the experiments type
     args = Options().parse()
@@ -261,6 +253,56 @@ def evaluate(args):
     style_model.setTarget(style_v)
 
     output = style_model(content_image)
+    utils.tensor_save_bgrimage(output.data[0], args.output_image, args.cuda)
+
+
+def get_context():
+    """
+    for uWSGI backend.
+    :return:
+    """
+    _cmdline = r'python %s eval --content-image %s --style-image %s --model %s --content-size 1024'
+    args_cmdline = ['eval',
+                    '--content-image', '',
+                    '--style-image', '',
+                    '--model', 'styl/experiments/models/21styles.model',
+                    '--content-size', '1024']
+    args = Options().parser.parse_args(args_cmdline)
+
+    style_model = Net(ngf=args.ngf)
+    style_model.load_state_dict(torch.load(args.model))
+
+    if args.cuda:
+        style_model.cuda()
+
+    return style_model, args
+
+
+def entry(content_image, style_image, model, args):
+    """
+    entered by backend code.
+    :param args:
+    :param content_image: str
+    :param model: str
+    :param style_image: object
+    :return:
+    """
+    content = utils.tensor_load_rgbimage(content_image, size=args.content_size, keep_asp=True)
+    content = content.unsqueeze(0)
+    style = utils.tensor_load_rgbimage(style_image, size=args.style_size)
+    style = style.unsqueeze(0)
+    style = utils.preprocess_batch(style)
+
+    if args.cuda:
+        content= content.cuda()
+        style = style.cuda()
+
+    style_v = Variable(style, volatile=True)
+
+    content= Variable(utils.preprocess_batch(content), volatile=True)
+    model.setTarget(style_v)
+
+    output = model(content)
     utils.tensor_save_bgrimage(output.data[0], args.output_image, args.cuda)
 
 
