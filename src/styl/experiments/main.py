@@ -21,7 +21,7 @@ from torch.utils.data import DataLoader
 from torchvision import datasets
 from torchvision import transforms
 
-import utils
+from .utils import *
 from .net import Net, Vgg16
 
 from .option import Options
@@ -56,18 +56,18 @@ def optimize(args):
     ref: Image Style Transfer Using Convolutional Neural Networks
     """
     # load the content and style target
-    content_image = utils.tensor_load_rgbimage(args.content_image, size=args.content_size, keep_asp=True)
+    content_image = tensor_load_rgbimage(args.content_image, size=args.content_size, keep_asp=True)
     content_image = content_image.unsqueeze(0)
-    content_image = Variable(utils.preprocess_batch(content_image), requires_grad=False)
-    content_image = utils.subtract_imagenet_mean_batch(content_image)
-    style_image = utils.tensor_load_rgbimage(args.style_image, size=args.style_size)
+    content_image = Variable(preprocess_batch(content_image), requires_grad=False)
+    content_image = subtract_imagenet_mean_batch(content_image)
+    style_image = tensor_load_rgbimage(args.style_image, size=args.style_size)
     style_image = style_image.unsqueeze(0)
-    style_image = Variable(utils.preprocess_batch(style_image), requires_grad=False)
-    style_image = utils.subtract_imagenet_mean_batch(style_image)
+    style_image = Variable(preprocess_batch(style_image), requires_grad=False)
+    style_image = subtract_imagenet_mean_batch(style_image)
 
     # load the pre-trained vgg-16 and extract features
     vgg = Vgg16()
-    utils.init_vgg16(args.vgg_model_dir)
+    init_vgg16(args.vgg_model_dir)
     vgg.load_state_dict(torch.load(os.path.join(args.vgg_model_dir, "vgg16.weight")))
     if args.cuda:
         content_image = content_image.cuda()
@@ -76,21 +76,21 @@ def optimize(args):
     features_content = vgg(content_image)
     f_xc_c = Variable(features_content[1].data, requires_grad=False)
     features_style = vgg(style_image)
-    gram_style = [utils.gram_matrix(y) for y in features_style]
+    gram_style = [gram_matrix(y) for y in features_style]
     # init optimizer
     output = Variable(content_image.data, requires_grad=True)
     optimizer = Adam([output], lr=args.lr)
     mse_loss = torch.nn.MSELoss()
     # optimizing the images
     for e in range(args.iters):
-        utils.imagenet_clamp_batch(output, 0, 255)
+        imagenet_clamp_batch(output, 0, 255)
         optimizer.zero_grad()
         features_y = vgg(output)
         content_loss = args.content_weight * mse_loss(features_y[1], f_xc_c)
 
         style_loss = 0.
         for m in range(len(features_y)):
-            gram_y = utils.gram_matrix(features_y[m])
+            gram_y = gram_matrix(features_y[m])
             gram_s = Variable(gram_style[m].data, requires_grad=False)
             style_loss += args.style_weight * mse_loss(gram_y, gram_s)
 
@@ -102,8 +102,8 @@ def optimize(args):
 
         optimizer.step()
     # save the image    
-    output = utils.add_imagenet_mean_batch(output)
-    utils.tensor_save_bgrimage(output.data[0], args.output_image, args.cuda)
+    output = add_imagenet_mean_batch(output)
+    tensor_save_bgrimage(output.data[0], args.output_image, args.cuda)
 
 
 def train(args):
@@ -133,14 +133,14 @@ def train(args):
     mse_loss = torch.nn.MSELoss()
 
     vgg = Vgg16()
-    utils.init_vgg16(args.vgg_model_dir)
+    init_vgg16(args.vgg_model_dir)
     vgg.load_state_dict(torch.load(os.path.join(args.vgg_model_dir, "vgg16.weight")))
 
     if args.cuda:
         style_model.cuda()
         vgg.cuda()
 
-    style_loader = utils.StyleLoader(args.style_folder, args.style_size)
+    style_loader = StyleLoader(args.style_folder, args.style_size)
 
     for e in range(args.epochs):
         style_model.train()
@@ -151,22 +151,22 @@ def train(args):
             n_batch = len(x)
             count += n_batch
             optimizer.zero_grad()
-            x = Variable(utils.preprocess_batch(x))
+            x = Variable(preprocess_batch(x))
             if args.cuda:
                 x = x.cuda()
 
             style_v = style_loader.get(batch_id)
             style_model.setTarget(style_v)
 
-            style_v = utils.subtract_imagenet_mean_batch(style_v)
+            style_v = subtract_imagenet_mean_batch(style_v)
             features_style = vgg(style_v)
-            gram_style = [utils.gram_matrix(y) for y in features_style]
+            gram_style = [gram_matrix(y) for y in features_style]
 
             y = style_model(x)
             xc = Variable(x.data.clone(), volatile=True)
 
-            y = utils.subtract_imagenet_mean_batch(y)
-            xc = utils.subtract_imagenet_mean_batch(xc)
+            y = subtract_imagenet_mean_batch(y)
+            xc = subtract_imagenet_mean_batch(xc)
 
             features_y = vgg(y)
             features_xc = vgg(xc)
@@ -177,7 +177,7 @@ def train(args):
 
             style_loss = 0.
             for m in range(len(features_y)):
-                gram_y = utils.gram_matrix(features_y[m])
+                gram_y = gram_matrix(features_y[m])
                 gram_s = Variable(gram_style[m].data, requires_grad=False).repeat(args.batch_size, 1, 1, 1)
                 style_loss += args.style_weight * mse_loss(gram_y, gram_s[:n_batch, :, :])
 
@@ -233,11 +233,11 @@ def check_paths(args):
 
 
 def evaluate(args):
-    content_image = utils.tensor_load_rgbimage(args.content_image, size=args.content_size, keep_asp=True)
+    content_image = tensor_load_rgbimage(args.content_image, size=args.content_size, keep_asp=True)
     content_image = content_image.unsqueeze(0)
-    style = utils.tensor_load_rgbimage(args.style_image, size=args.style_size)
+    style = tensor_load_rgbimage(args.style_image, size=args.style_size)
     style = style.unsqueeze(0)
-    style = utils.preprocess_batch(style)
+    style = preprocess_batch(style)
 
     style_model = Net(ngf=args.ngf)
     style_model.load_state_dict(torch.load(args.model))
@@ -253,7 +253,7 @@ def evaluate(args):
     style_model.setTarget(style_v)
 
     output = style_model(content_image)
-    utils.tensor_save_bgrimage(output.data[0], args.output_image, args.cuda)
+    tensor_save_bgrimage(output.data[0], args.output_image, args.cuda)
 
 
 def get_context():
@@ -287,23 +287,23 @@ def entry(content_image, style_image, model, args):
     :param style_image: object
     :return:
     """
-    content = utils.tensor_load_rgbimage(content_image, size=args.content_size, keep_asp=True)
+    content = tensor_load_rgbimage(content_image, size=args.content_size, keep_asp=True)
     content = content.unsqueeze(0)
-    style = utils.tensor_load_rgbimage(style_image, size=args.style_size)
+    style = tensor_load_rgbimage(style_image, size=args.style_size)
     style = style.unsqueeze(0)
-    style = utils.preprocess_batch(style)
+    style = preprocess_batch(style)
 
     if args.cuda:
-        content= content.cuda()
+        content = content.cuda()
         style = style.cuda()
 
     style_v = Variable(style, volatile=True)
 
-    content= Variable(utils.preprocess_batch(content), volatile=True)
+    content = Variable(preprocess_batch(content), volatile=True)
     model.setTarget(style_v)
 
     output = model(content)
-    utils.tensor_save_bgrimage(output.data[0], args.output_image, args.cuda)
+    tensor_save_bgrimage(output.data[0], args.output_image, args.cuda)
 
 
 def fast_evaluate(args, basedir, contents, idx=0):
@@ -319,17 +319,17 @@ def fast_evaluate(args, basedir, contents, idx=0):
 
     for content_image in contents:
         idx += 1
-        content_image = utils.tensor_load_rgbimage(content_image, size=args.content_size, keep_asp=True).unsqueeze(0)
+        content_image = tensor_load_rgbimage(content_image, size=args.content_size, keep_asp=True).unsqueeze(0)
         if args.cuda:
             content_image = content_image.cuda()
-        content_image = Variable(utils.preprocess_batch(content_image), volatile=True)
+        content_image = Variable(preprocess_batch(content_image), volatile=True)
 
         for isx in range(style_loader.size()):
             style_v = Variable(style_loader.get(isx).data, volatile=True)
             style_model.setTarget(style_v)
             output = style_model(content_image)
             filename = os.path.join(basedir, "{}_{}.png".format(idx, isx + 1))
-            utils.tensor_save_bgrimage(output.data[0], filename, args.cuda)
+            tensor_save_bgrimage(output.data[0], filename, args.cuda)
             print(filename)
 
 

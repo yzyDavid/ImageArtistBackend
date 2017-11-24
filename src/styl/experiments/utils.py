@@ -16,7 +16,7 @@ from PIL import Image
 from torch.autograd import Variable
 from torch.utils.serialization import load_lua
 
-from net import Vgg16
+from .net import Vgg16
 
 def tensor_load_rgbimage(filename, size=None, scale=None, keep_asp=False):
     img = Image.open(filename).convert('RGB')
