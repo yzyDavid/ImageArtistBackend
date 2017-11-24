@@ -2,6 +2,7 @@ import numpy as np
 import os
 
 from .algorithm import Algorithm
+from styl.experiments.main import entry
 
 
 # noinspection PyCompatibility

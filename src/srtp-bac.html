@@ -92,10 +92,10 @@
 
     let currentStyle = 'style1';
 
-    let resultImgData;
+
     function init() {
         console.log('init');
-        resultImgData = screenCtx.getImageData(0, 0, WIDTH, HEIGHT);
+        let resultImgData = screenCtx.getImageData(0, 0, WIDTH, HEIGHT);
         screen.addEventListener('click', function (e) {
             const styleImg = styleImgList[currentStyle];
             let x = e.layerY;
@@ -168,10 +168,7 @@
     function setInitCtx(img) {
         screenCtx.drawImage(img, 0, 0);
         HEIGHT = img.height;
-
         WIDTH = img.width;
- resultImgData = screenCtx.getImageData(0, 0, WIDTH, HEIGHT);
-
     }
 
     // const baseUrl = 'https://cluster.yuzhenyun.me/api';

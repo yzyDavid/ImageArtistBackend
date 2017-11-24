@@ -22,9 +22,18 @@ from torchvision import datasets
 from torchvision import transforms
 
 import utils
-from net import Net, Vgg16
+from .net import Net, Vgg16
 
-from option import Options
+from .option import Options
+
+
+def entry():
+    """
+    entered by backend code.
+    :return:
+    """
+    pass
+
 
 def main():
     # figure out the experiments type
@@ -33,7 +42,6 @@ def main():
         raise ValueError("ERROR: specify the experiment type")
     if args.cuda and not torch.cuda.is_available():
         raise ValueError("ERROR: cuda is not available, try running on CPU")
-
 
     if args.subcommand == "train":
         # Training the model 
@@ -61,7 +69,7 @@ def optimize(args):
     content_image = Variable(utils.preprocess_batch(content_image), requires_grad=False)
     content_image = utils.subtract_imagenet_mean_batch(content_image)
     style_image = utils.tensor_load_rgbimage(args.style_image, size=args.style_size)
-    style_image = style_image.unsqueeze(0)    
+    style_image = style_image.unsqueeze(0)
     style_image = Variable(utils.preprocess_batch(style_image), requires_grad=False)
     style_image = utils.subtract_imagenet_mean_batch(style_image)
 
@@ -99,7 +107,7 @@ def optimize(args):
         if (e + 1) % args.log_interval == 0:
             print(total_loss.data.cpu().numpy()[0])
         total_loss.backward()
-        
+
         optimizer.step()
     # save the image    
     output = utils.add_imagenet_mean_batch(output)
@@ -191,18 +199,18 @@ def train(args):
             if (batch_id + 1) % args.log_interval == 0:
                 mesg = "{}\tEpoch {}:\t[{}/{}]\tcontent: {:.6f}\tstyle: {:.6f}\ttotal: {:.6f}".format(
                     time.ctime(), e + 1, count, len(train_dataset),
-                                agg_content_loss / (batch_id + 1),
-                                agg_style_loss / (batch_id + 1),
-                                (agg_content_loss + agg_style_loss) / (batch_id + 1)
+                                  agg_content_loss / (batch_id + 1),
+                                  agg_style_loss / (batch_id + 1),
+                                  (agg_content_loss + agg_style_loss) / (batch_id + 1)
                 )
                 print(mesg)
 
-            
             if (batch_id + 1) % (4 * args.log_interval) == 0:
                 # save model
                 style_model.eval()
                 style_model.cpu()
-                save_model_filename = "Epoch_" + str(e) + "iters_" + str(count) + "_" + str(time.ctime()).replace(' ', '_') + "_" + str(
+                save_model_filename = "Epoch_" + str(e) + "iters_" + str(count) + "_" + str(time.ctime()).replace(' ',
+                                                                                                                  '_') + "_" + str(
                     args.content_weight) + "_" + str(args.style_weight) + ".model"
                 save_model_path = os.path.join(args.save_model_dir, save_model_filename)
                 torch.save(style_model.state_dict(), save_model_path)
@@ -236,7 +244,7 @@ def evaluate(args):
     content_image = utils.tensor_load_rgbimage(args.content_image, size=args.content_size, keep_asp=True)
     content_image = content_image.unsqueeze(0)
     style = utils.tensor_load_rgbimage(args.style_image, size=args.style_size)
-    style = style.unsqueeze(0)    
+    style = style.unsqueeze(0)
     style = utils.preprocess_batch(style)
 
     style_model = Net(ngf=args.ngf)
@@ -256,16 +264,16 @@ def evaluate(args):
     utils.tensor_save_bgrimage(output.data[0], args.output_image, args.cuda)
 
 
-def fast_evaluate(args, basedir, contents, idx = 0):
+def fast_evaluate(args, basedir, contents, idx=0):
     # basedir to save the data
     style_model = Net(ngf=args.ngf)
     style_model.load_state_dict(torch.load(args.model))
     style_model.eval()
     if args.cuda:
         style_model.cuda()
-    
-    style_loader = StyleLoader(args.style_folder, args.style_size, 
-        cuda=args.cuda)
+
+    style_loader = StyleLoader(args.style_folder, args.style_size,
+                               cuda=args.cuda)
 
     for content_image in contents:
         idx += 1
@@ -278,10 +286,10 @@ def fast_evaluate(args, basedir, contents, idx = 0):
             style_v = Variable(style_loader.get(isx).data, volatile=True)
             style_model.setTarget(style_v)
             output = style_model(content_image)
-            filename = os.path.join(basedir, "{}_{}.png".format(idx, isx+1))
+            filename = os.path.join(basedir, "{}_{}.png".format(idx, isx + 1))
             utils.tensor_save_bgrimage(output.data[0], filename, args.cuda)
             print(filename)
 
 
 if __name__ == "__main__":
-   main()
+    main()
