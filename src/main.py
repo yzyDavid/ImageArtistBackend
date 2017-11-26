@@ -6,6 +6,8 @@ import shutil
 import time
 from flask_request_params import bind_request_params
 from flask_cors import CORS, cross_origin
+import cv2
+import numpy as np
 
 from app.config import DEBUG, PORT, TEMP_DIR, ALLOWED_EXTENSIONS, MAX_CONTENT_LENGTH
 from app.theme_algorithm import ThemeAlgorithm
@@ -99,6 +101,35 @@ def theme_color_count():
 
     response = send_file(result, mimetype='image/jpeg', as_attachment=False)
     return response
+
+
+@app.route('/api/resize', methods=['POST'])
+def resize_image():
+    """
+    form-data:
+    image: a jpeg picture
+    :return: a file pathname, assigned by backend.
+    """
+    if 'image' not in request.files:
+        return '', 400
+    f = request.files['image']
+    if f.filename == '':
+        return '', 400
+    if not _allowed_file(f.filename):
+        return '', 400
+
+    # TODO
+    im = cv2.imdecode(f.read(), cv2.IMREAD_COLOR)
+    print(f.filename)
+    f.close()
+    im = cv2.resize(im, (1024, 768), interpolation=cv2.INTER_CUBIC)
+    cv2.imwrite(f.filename, im)
+
+    filename = hash_filename(f)
+    pathname = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+    f.save(pathname)
+
+    return pathname
 
 
 @app.route('/api/upload_image', methods=['POST'])
