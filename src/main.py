@@ -8,6 +8,7 @@ from flask_request_params import bind_request_params
 from flask_cors import CORS, cross_origin
 import cv2
 import numpy as np
+from IPython import embed
 
 from app.config import DEBUG, PORT, TEMP_DIR, ALLOWED_EXTENSIONS, MAX_CONTENT_LENGTH
 from app.theme_algorithm import ThemeAlgorithm
@@ -118,16 +119,18 @@ def resize_image():
     if not _allowed_file(f.filename):
         return '', 400
 
-    # TODO
-    im = cv2.imdecode(f.read(), cv2.IMREAD_COLOR)
-    print(f.filename)
+    filename = os.path.join(TEMP_DIR, f.filename)
+    f.save(filename)
+    im = cv2.imread(filename, cv2.IMREAD_COLOR)
     f.close()
     im = cv2.resize(im, (1024, 768), interpolation=cv2.INTER_CUBIC)
-    cv2.imwrite(f.filename, im)
+    cv2.imwrite(filename, im)
 
-    filename = hash_filename(f)
-    pathname = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-    f.save(pathname)
+    with open(filename, 'rb') as f:
+        f.filename = filename
+        fname = hash_filename(f)
+        pathname = os.path.join(app.config['UPLOAD_FOLDER'], fname)
+        shutil.move(filename, pathname)
 
     return pathname
 
