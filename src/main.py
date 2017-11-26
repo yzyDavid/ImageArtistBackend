@@ -105,6 +105,8 @@ def theme_color_count():
 
 
 @app.route('/api/resize', methods=['POST'])
+@app.route('/api/upload_image', methods=['POST'])
+@app.route('/api/upload_style', methods=['POST'])
 def resize_image():
     """
     form-data:
@@ -128,15 +130,14 @@ def resize_image():
 
     with open(filename, 'rb') as f:
         f.filename = filename
-        fname = hash_filename(f)
-        pathname = os.path.join(app.config['UPLOAD_FOLDER'], fname)
+        f_name = hash_filename(f)
+        pathname = os.path.join(app.config['UPLOAD_FOLDER'], f_name)
         shutil.move(filename, pathname)
 
     return pathname
 
 
-@app.route('/api/upload_image', methods=['POST'])
-@cross_origin()
+@DeprecationWarning
 def upload_image():
     """
     form-data:
@@ -152,28 +153,6 @@ def upload_image():
         return '', 400
 
     # filename = secure_filename(f.filename)
-    filename = hash_filename(f)
-    pathname = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-    f.save(pathname)
-
-    return pathname
-
-
-@app.route('/api/upload_style', methods=['POST'])
-def upload_style():
-    """
-    form-data:
-    image: a jpeg picture
-    :return: a file pathname, assigned by backend.
-    """
-    if 'image' not in request.files:
-        return '', 400
-    f = request.files['image']
-    if f.filename == '':
-        return '', 400
-    if not _allowed_file(f.filename):
-        return '', 400
-
     filename = hash_filename(f)
     pathname = os.path.join(app.config['UPLOAD_FOLDER'], filename)
     f.save(pathname)
