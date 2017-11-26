@@ -22,6 +22,7 @@
             flex-wrap: wrap;
             align-content: flex-start;
         }
+
         canvas {
             border: 1px solid black;
         }
@@ -222,7 +223,18 @@
         }).then((text) => {
             if (!isInit) {
                 isInit = true;
-                loadImage(text);
+                const form = new FormData();
+                const file = document.getElementById("content_file");
+                form.append("image", file.files[0]);
+                fetch(baseUrl + '/resize', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': 'Basic ' + btoa(auth),
+                    },
+                    body: form
+                }).then((text) => {
+                    loadImage(text);
+                });
             }
             content_pathname = text;
             const form = new FormData();
