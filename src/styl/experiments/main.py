@@ -12,6 +12,7 @@ import os
 import sys
 import time
 import numpy as np
+import socket
 
 import torch
 from torch.optim import Adam
@@ -267,6 +268,9 @@ def get_context():
                     '--style-image', '',
                     '--model', 'styl/experiments/models/21styles.model',
                     '--content-size', '1024']
+    if socket.gethostname().startswith('yzy'):
+        args_cmdline.append('--cuda')
+        args_cmdline.append('0')
     args = Options().parser.parse_args(args_cmdline)
 
     style_model = Net(ngf=args.ngf)
