@@ -58,31 +58,31 @@
     let HEIGHT = 768;
 
 
-/*    const styleList = {
-        'original': 'img/original.jpg',
-        "Robert_Delaunay,_1906,_Portrait": "img/Robert_Delaunay,_1906,_Portrait.jpg",
-        "candy": "img/candy.jpg",
-        "composition_vii": "img/composition_vii.jpg",
-        "escher_sphere": "img/escher_sphere.jpg",
-        "feathers": "img/feathers.jpg",
-        "frida_kahlo": "img/frida_kahlo.jpg",
-        "la_muse": "img/la_muse.jpg",
-        "mosaic": "img/mosaic.jpg",
-        "mosaic_ducks_massimo": "img/mosaic_ducks_massimo.jpg",
-        "output": "img/output.jpg",
-        "pencil": "img/pencil.jpg",
-        "picasso_selfport1907": "img/picasso_selfport1907.jpg",
-        "rain_princess": "img/rain_princess.jpg",
-        "seated-nude": "img/seated-nude.jpg",
-        "shipwreck": "img/shipwreck.jpg",
-        "starry_night": "img/starry_night.jpg",
-        "stars2": "img/stars2.jpg",
-        "strip": "img/strip.jpg",
-        "the_scream": "img/the_scream.jpg",
-        "udnie": "img/udnie.jpg",
-        "wave": "img/wave.jpg",
-        "woman-with-hat-matisse": "img/woman-with-hat-matisse.jpg"
-    };*/
+    /*    const styleList = {
+            'original': 'img/original.jpg',
+            "Robert_Delaunay,_1906,_Portrait": "img/Robert_Delaunay,_1906,_Portrait.jpg",
+            "candy": "img/candy.jpg",
+            "composition_vii": "img/composition_vii.jpg",
+            "escher_sphere": "img/escher_sphere.jpg",
+            "feathers": "img/feathers.jpg",
+            "frida_kahlo": "img/frida_kahlo.jpg",
+            "la_muse": "img/la_muse.jpg",
+            "mosaic": "img/mosaic.jpg",
+            "mosaic_ducks_massimo": "img/mosaic_ducks_massimo.jpg",
+            "output": "img/output.jpg",
+            "pencil": "img/pencil.jpg",
+            "picasso_selfport1907": "img/picasso_selfport1907.jpg",
+            "rain_princess": "img/rain_princess.jpg",
+            "seated-nude": "img/seated-nude.jpg",
+            "shipwreck": "img/shipwreck.jpg",
+            "starry_night": "img/starry_night.jpg",
+            "stars2": "img/stars2.jpg",
+            "strip": "img/strip.jpg",
+            "the_scream": "img/the_scream.jpg",
+            "udnie": "img/udnie.jpg",
+            "wave": "img/wave.jpg",
+            "woman-with-hat-matisse": "img/woman-with-hat-matisse.jpg"
+        };*/
 
     const styleList = {};
 
@@ -92,14 +92,17 @@
 
     let currentStyle = 'style1';
 
+    let isInit = false;
+
     let resultImgData;
+
     function init() {
         console.log('init');
         resultImgData = screenCtx.getImageData(0, 0, WIDTH, HEIGHT);
         screen.addEventListener('click', function (e) {
             const styleImg = styleImgList[currentStyle];
-            let x = e.layerY;
-            let y = e.layerX;
+            const x = e.layerY;
+            const y = e.layerX;
             for (let i = Math.max(0, x - kernel_half); i < Math.min(HEIGHT, x + kernel_half); i++) {
                 let k = 255 - parseInt(i * 255 / HEIGHT);
                 let w = i * WIDTH;
@@ -123,22 +126,22 @@
         let img = new Image();
         img.src = styleList[name];
         img.onload = function () {
-/*            if (name === 'original') {
-                screenCtx.drawImage(img, 0, 0);
-                HEIGHT = img.height;
-                WIDTH = img.width;
-            }*/
+            /*            if (name === 'original') {
+                            screenCtx.drawImage(img, 0, 0);
+                            HEIGHT = img.height;
+                            WIDTH = img.width;
+                        }*/
             imgLoaderCtx.drawImage(img, 0, 0);
             styleImgList[name] = imgLoaderCtx.getImageData(0, 0, img.width, img.height).data.slice(0);
-/*            remainStyleCnt--;
-            if (remainStyleCnt === 0) {
-                init();
-            }*/
+            /*            remainStyleCnt--;
+                        if (remainStyleCnt === 0) {
+                            init();
+                        }*/
             buttonDiv.innerHTML +=
                 `<div class="buttonDiv"><button onclick="currentStyle='${name}';">${name}</button></div>`;
-/*            buttonDiv.innerHTML +=
-                `<div class="buttonDiv"><img src="${img.src}"/></div>`;*/
-            setInitCtx(img);
+            /*            buttonDiv.innerHTML +=
+                            `<div class="buttonDiv"><img src="${img.src}"/></div>`;*/
+            // setInitCtx(img);
         }
     }
 
@@ -165,12 +168,22 @@
     //     loadStyle(style);
     // }
 
+    function loadImage(img_response) {
+        const url = baseUrl + '/image?q=' + encodeURI(img_response);
+        const img = new Image();
+        img.src = url;
+        img.onload = () => {
+            imgLoaderCtx.drawImage(img, 0, 0);
+            setInitCtx(img);
+        }
+    }
+
     function setInitCtx(img) {
         screenCtx.drawImage(img, 0, 0);
         HEIGHT = img.height;
 
         WIDTH = img.width;
- resultImgData = screenCtx.getImageData(0, 0, WIDTH, HEIGHT);
+        resultImgData = screenCtx.getImageData(0, 0, WIDTH, HEIGHT);
 
     }
 
@@ -204,6 +217,9 @@
             }
             return res.text();
         }).then((text) => {
+            if (!isInit) {
+                loadImage(text);
+            }
             content_pathname = text;
             const form = new FormData();
             const file = document.getElementById("style_file");
