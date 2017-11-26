@@ -218,6 +218,7 @@
             return res.text();
         }).then((text) => {
             if (!isInit) {
+                isInit = true;
                 loadImage(text);
             }
             content_pathname = text;
