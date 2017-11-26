@@ -1,3 +1,4 @@
+IPython
 torchvision
 torch
 Flask==0.12.2
