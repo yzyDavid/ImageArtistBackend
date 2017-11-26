@@ -185,10 +185,9 @@
     function setInitCtx(img) {
         screenCtx.drawImage(img, 0, 0);
         HEIGHT = img.height;
-
         WIDTH = img.width;
+        console.log(HEIGHT, WIDTH);
         resultImgData = screenCtx.getImageData(0, 0, WIDTH, HEIGHT);
-
     }
 
     // const baseUrl = 'https://cluster.yuzhenyun.me/api';
@@ -204,6 +203,10 @@
         const name_key = document.getElementById("style_name").value;
         if (!name_key) {
             alert('请输入style名称');
+            return;
+        }
+        if (Object.hasOwnProperty(name_key)) {
+            alert('风格名称重复');
             return;
         }
         const form = new FormData();
@@ -232,6 +235,11 @@
                         'Authorization': 'Basic ' + btoa(auth),
                     },
                     body: form
+                }).then((res) => {
+                    if (!res.ok) {
+                        throw new DOMException()
+                    }
+                    return res.text();
                 }).then((text) => {
                     loadImage(text);
                 });
