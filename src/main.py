@@ -129,10 +129,12 @@ def resize_image():
     x, y = im.shape[0:2]
     if x / y > 4 / 3:
         im = cv2.resize(im, (1024, 1024 * y // x), interpolation=cv2.INTER_CUBIC)
-        back[:, (768 - im.shape[1]) // 2:, :] = im[:, :, :]
+        t = (768 - im.shape[1]) // 2
+        back[:, t:t + 1024 * y // x, :] = im[:, :, :]
     else:
         im = cv2.resize(im, (768 * x // y, 768), interpolation=cv2.INTER_CUBIC)
-        back[(1024 - im.shape[0]) // 2:, :, :] = im[:, :, :]
+        t = (1024 - im.shape[0]) // 2
+        back[t:t + 768 * x // y, :, :] = im[:, :, :]
     im = back
     cv2.imwrite(filename, im)
 
