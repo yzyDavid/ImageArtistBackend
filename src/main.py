@@ -125,7 +125,15 @@ def resize_image():
     f.save(filename)
     im = cv2.imread(filename, cv2.IMREAD_COLOR)
     f.close()
-    im = cv2.resize(im, (1024, 768), interpolation=cv2.INTER_CUBIC)
+    back = np.zeros((1024, 768, 3), dtype=im.dtype)
+    x, y = im.shape[0:2]
+    if x / y > 4 / 3:
+        im = cv2.resize(im, (1024, 1024 * y // x), interpolation=cv2.INTER_CUBIC)
+        back[:, (768 - im.shape[1]) // 2:, :] = im[:, :, :]
+    else:
+        im = cv2.resize(im, (768 * x // y, 768), interpolation=cv2.INTER_CUBIC)
+        back[(1024 - im.shape[0]) // 2:, :, :] = im[:, :, :]
+    im = back
     cv2.imwrite(filename, im)
 
     with open(filename, 'rb') as f:
