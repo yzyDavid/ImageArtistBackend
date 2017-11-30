@@ -51,12 +51,12 @@
     <div id="metaButtonDiv">
         <label for="style_name"></label><input type=text id="style_name">
         <label for="内容图片">
-            <input type=file id="content_file">
+            <input type=file id="content_file" class="btn">
         </label>
         <label for="风格图片">
-            <input type=file id="style_file">
+            <input type=file id="style_file" class="btn">
         </label>
-        <button id="transfer">进行转换</button>
+        <button class="btn btn-primary" id="transfer">进行转换</button>
     </div>
     <div id="buttonDiv"></div>
 </div>
@@ -155,7 +155,7 @@
                             init();
                         }*/
             buttonDiv.innerHTML +=
-                `<div class="btn btn-default buttonDiv"><button onclick="currentStyle='${name}';">${name}</button></div>`;
+                `<div class="buttonDiv"><button class="btn btn-default" onclick="currentStyle='${name}';">${name}</button></div>`;
             /*            buttonDiv.innerHTML +=
                             `<div class="buttonDiv"><img src="${img.src}"/></div>`;*/
             // setInitCtx(img);
