@@ -49,11 +49,14 @@
         <canvas id="imgloader" height="768" width="1024">抱歉，您的浏览器还不支持canvas。</canvas>
     </div>
     <div id="metaButtonDiv">
-        <label for="style_name"></label><input type=text id="style_name">
-        <label for="内容图片">
+        <label for="style_name">
+            <em>给画刷取个名字</em>
+            <input type=text id="style_name">
+        </label>
+        <label for="content_file">
             <input type=file id="content_file" class="btn">
         </label>
-        <label for="风格图片">
+        <label for="style_file">
             <input type=file id="style_file" class="btn">
         </label>
         <button class="btn btn-primary" id="transfer">进行转换</button>
@@ -155,7 +158,7 @@
                             init();
                         }*/
             buttonDiv.innerHTML +=
-                `<div class="buttonDiv"><button class="btn btn-default" onclick="currentStyle='${name}';">${name}</button></div>`;
+                `<div class="buttonDiv"><button class="btn btn-info" onclick="currentStyle='${name}';">${name}</button></div>`;
             /*            buttonDiv.innerHTML +=
                             `<div class="buttonDiv"><img src="${img.src}"/></div>`;*/
             // setInitCtx(img);
