@@ -121,21 +121,18 @@ def resize_image():
     if not _allowed_file(f.filename):
         return '', 400
 
+    if 'height' in request.form and 'width' in request.form:
+        height = request.form['height']
+        width = request.form['width']
+    else:
+        height = 768
+        width = 1024
+
     filename = os.path.join(TEMP_DIR, f.filename)
     f.save(filename)
     im = cv2.imread(filename, cv2.IMREAD_COLOR)
     f.close()
-    back = np.zeros((1024, 768, 3), dtype=im.dtype)
-    x, y = im.shape[0:2]
-    if x / y > 4 / 3:
-        im = cv2.resize(im, (1024, 1024 * y // x), interpolation=cv2.INTER_CUBIC)
-        t = (768 - im.shape[1]) // 2
-        back[:, t:t + 1024 * y // x, :] = im[:, :, :]
-    else:
-        im = cv2.resize(im, (768 * x // y, 768), interpolation=cv2.INTER_CUBIC)
-        t = (1024 - im.shape[0]) // 2
-        back[t:t + 768 * x // y, :, :] = im[:, :, :]
-    im = back
+    im = cv2.resize(im, (width, height), interpolation=cv2.INTER_CUBIC)
     cv2.imwrite(filename, im)
 
     with open(filename, 'rb') as f:
