@@ -195,7 +195,6 @@ def transfer_url():
     style: str => pathname of an uploaded style image.
     :return: a jpeg image url
     """
-    t1 = time.perf_counter()
     if 'img' not in request.form or 'style' not in request.form:
         return '', 400
     img = request.form['img']
@@ -209,8 +208,6 @@ def transfer_url():
         f_name = hash_filename(f)
     pathname = os.path.join(TEMP_DIR, f_name)
     shutil.move(output_pathname, pathname)
-    t2 = time.perf_counter()
-    print(f'perf_counter: {t2 - t1}')
     return pathname, 200
 
 
