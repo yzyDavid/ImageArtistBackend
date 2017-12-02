@@ -123,7 +123,7 @@ def resize_image():
 
     if 'height' in request.form and 'width' in request.form:
         height = int(request.form['height'])
-        width = int(equest.form['width'])
+        width = int(request.form['width'])
     else:
         height = 768
         width = 1024
