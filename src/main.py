@@ -13,7 +13,7 @@ from IPython import embed
 from app.config import DEBUG, PORT, TEMP_DIR, ALLOWED_EXTENSIONS, MAX_CONTENT_LENGTH
 from app.theme_algorithm import ThemeAlgorithm
 from app.style_algorithm import StyleAlgorithm
-from app.utils import hash_filename
+from app.utils import hash_filename, perf_counter
 
 app = Flask(__name__)
 app.config['MAX_CONTENT_LENGTH'] = MAX_CONTENT_LENGTH
@@ -46,6 +46,7 @@ def hello():
 
 
 @app.route('/api/theme_color', methods=['POST'])
+@perf_counter
 def theme_color():
     """
     POST
@@ -71,6 +72,7 @@ def theme_color():
 
 
 @app.route('/api/theme_color_count', methods=['POST'])
+@perf_counter
 def theme_color_count():
     """
     POST
@@ -107,6 +109,7 @@ def theme_color_count():
 @app.route('/api/resize', methods=['POST'])
 @app.route('/api/upload_image', methods=['POST'])
 @app.route('/api/upload_style', methods=['POST'])
+@perf_counter
 def resize_image():
     """
     form-data:
@@ -168,6 +171,7 @@ def upload_image():
 
 
 @app.route('/api/transfer', methods=['POST'])
+@perf_counter
 def transfer():
     """
     form-data:
@@ -188,6 +192,7 @@ def transfer():
 
 # noinspection PyCompatibility
 @app.route('/api/transfer_url', methods=['POST'])
+@perf_counter
 def transfer_url():
     """
     form-data:
