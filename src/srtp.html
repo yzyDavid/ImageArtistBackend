@@ -5,6 +5,19 @@
     <meta charset="UTF-8">
     <title>SRTP web</title>
 
+    <!-- 最新版本的 Bootstrap 核心 CSS 文件 -->
+    <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css"
+          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+    <!-- 可选的 Bootstrap 主题文件（一般不用引入） -->
+    <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap-theme.min.css"
+          integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
+    <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+    <script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"
+            integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+            crossorigin="anonymous"></script>
+
     <style>
         #imgloader {
             display: none;
@@ -36,14 +49,19 @@
         <canvas id="imgloader" height="768" width="1024">抱歉，您的浏览器还不支持canvas。</canvas>
     </div>
     <div id="metaButtonDiv">
-        <label for="style_name"></label><input type=text id="style_name">
-        <label for="内容图片">
-            <input type=file id="content_file">
+        <label for="style_name">
+            <em>给画刷取个名字</em>
+            <input type=text id="style_name">
         </label>
-        <label for="风格图片">
-            <input type=file id="style_file">
+        <label for="content_file">
+            <span>内容</span>
+            <input type=file id="content_file" class="btn">
         </label>
-        <button id="transfer">进行转换</button>
+        <label for="style_file">
+            <span>风格</span>
+            <input type=file id="style_file" class="btn">
+        </label>
+        <button class="btn btn-primary" id="transfer">进行转换</button>
     </div>
     <div id="buttonDiv"></div>
 </div>
@@ -142,7 +160,7 @@
                             init();
                         }*/
             buttonDiv.innerHTML +=
-                `<div class="buttonDiv"><button onclick="currentStyle='${name}';">${name}</button></div>`;
+                `<div class="buttonDiv"><button class="btn btn-info" onclick="currentStyle='${name}';">${name}</button></div>`;
             /*            buttonDiv.innerHTML +=
                             `<div class="buttonDiv"><img src="${img.src}"/></div>`;*/
             // setInitCtx(img);
